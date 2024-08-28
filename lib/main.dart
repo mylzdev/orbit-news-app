@@ -12,5 +12,6 @@ void main() async {
   di.init();
   // TODO : Put this inside di.init()
   await sl<ArticleLocalDatasource>().initDb();
+  // TODO : Test
   runApp(const App());
 }
