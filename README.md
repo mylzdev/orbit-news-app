@@ -2,7 +2,8 @@
 
 Orbit is a modern news app built using Flutter, designed to deliver the latest news in a fast and user-friendly way.
 
-![Screenshot](screenshot.png)
+<img src="screenshot.png" alt="Orbit Screenshot" width="300">
+
 ## Features
 
 - Clean Architecture & TDD
