@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:news_app/app/features/article/data/api/api.dart';
 import 'package:news_app/app/features/article/presentation/bloc/article_event.dart';
+import 'package:news_app/app/features/article/presentation/cubit/article_tab_cubit.dart';
 
-import '../../../../injection_container.dart';
-import '../../../core/common/widgets/tabbar/tabbar.dart';
+import '../../../core/di/injection_container.dart';
 import '../../../core/utils/constant/sizes.dart';
 import 'bloc/article_bloc.dart';
 import 'bloc/article_state.dart';
@@ -14,45 +15,25 @@ class ArticlePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) {
-        final articleBloc = sl<ArticleBloc>();
-        articleBloc.add(const GetData());
-        return articleBloc;
-      },
+    final articleCategoryLength = ArticleCategory.values.length;
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) {
+            final articleBloc = sl<ArticleBloc>();
+            articleBloc.add(const GetData(ArticleCategory.general));
+            return articleBloc;
+          },
+        ),
+        BlocProvider(create: (context) => ArticleTabCubit())
+      ],
       child: DefaultTabController(
-        length: 7,
+        length: articleCategoryLength,
         child: Scaffold(
           appBar: const ArticleAppbar(),
           body: NestedScrollView(
-            headerSliverBuilder: (context, innerBoxIsScrolled) {
-              return [
-                const SliverAppBar(
-                  pinned: true,
-                  floating: true,
-                  expandedHeight: 455,
-                  automaticallyImplyLeading: false,
-                  backgroundColor: Colors.transparent,
-                  flexibleSpace: FlexibleSpaceBar(
-                    background: Padding(
-                      padding: EdgeInsets.all(TSizes.md),
-                      child: ArticleBreakingNews(),
-                    ),
-                  ),
-                  bottom: TTabbar(
-                    tabs: [
-                      Tab(child: Text('All')),
-                      Tab(child: Text('International')),
-                      Tab(child: Text('Media')),
-                      Tab(child: Text('Magazine')),
-                      Tab(child: Text('Business')),
-                      Tab(child: Text('Crypto')),
-                      Tab(child: Text('Economics')),
-                    ],
-                  ),
-                ),
-              ];
-            },
+            headerSliverBuilder: (context, innerBoxIsScrolled) =>
+                [const ArticleSliverAppbar()],
             body: Padding(
               padding: const EdgeInsets.all(TSizes.md),
               child: BlocBuilder<ArticleBloc, ArticleState>(
@@ -60,8 +41,14 @@ class ArticlePage extends StatelessWidget {
                   return state.when(
                     initial: () => const ArticleLoadingView(),
                     loading: () => const ArticleLoadingView(),
-                    success: (articles) =>
-                        ArticleSuccessView(articles: articles),
+                    success: (articles) => TabBarView(
+                        physics: const NeverScrollableScrollPhysics(),
+                        children: List.generate(
+                          articleCategoryLength,
+                          (index) {
+                            return ArticleSuccessView(articles: articles);
+                          },
+                        )),
                     error: (failure) =>
                         ArticleErrorView(message: failure.message),
                   );

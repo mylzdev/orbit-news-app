@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 
@@ -40,9 +39,6 @@ class TAppbar extends StatelessWidget implements PreferredSizeWidget {
       child: AppBar(
         forceMaterialTransparency: true,
         centerTitle: centerTitle,
-        systemOverlayStyle: SystemUiOverlayStyle(
-            statusBarIconBrightness:
-                isDark ? Brightness.light : Brightness.dark),
         automaticallyImplyLeading: false,
         leadingWidth: leadingWidth,
         leading: showBackArrow

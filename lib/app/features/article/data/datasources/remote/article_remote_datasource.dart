@@ -12,9 +12,10 @@ class ArticleRemoteDatasource {
 
   ArticleRemoteDatasource({required this.client});
 
-  Future<Either<Failure, List<ArticleModel>>> getArticles() async {
+  Future<Either<Failure, List<ArticleModel>>> getArticles(ArticleCategory category) async {
     try {
-      final articles = await client.getTopHeadlines(Environment.apiKey);
+      final articles =
+          await client.getTopHeadlines(Environment.apiKey, category);
       return Right(articles.articles ?? []);
     } on DioException catch (e) {
       TLoggerHelper.error(e.toString());

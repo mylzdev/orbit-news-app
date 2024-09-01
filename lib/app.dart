@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import 'app/core/utils/constant/colors.dart';
 import 'app/features/article/presentation/article_page.dart';
 
 class App extends StatelessWidget {
@@ -12,7 +13,7 @@ class App extends StatelessWidget {
       title: 'News App',
       debugShowCheckedModeBanner: false,
       theme: ThemeData.light()
-          .copyWith(scaffoldBackgroundColor: const Color.fromARGB(255, 243, 243, 243)),
+          .copyWith(scaffoldBackgroundColor: TColors.scaffoldColor),
       darkTheme: ThemeData.dark(),
       themeMode: ThemeMode.light,
       home: const ArticlePage(),

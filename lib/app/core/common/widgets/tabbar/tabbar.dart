@@ -7,15 +7,22 @@ class TTabbar extends StatelessWidget implements PreferredSizeWidget {
   const TTabbar({
     super.key,
     required this.tabs,
+    this.controller,
+    this.onTap,
   });
 
   final List<Tab> tabs;
+  final TabController? controller;
+  final Function(int)? onTap;
 
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: Colors.white,
+      color: TColors.scaffoldColor,
       child: TabBar(
+        onTap: onTap,
+        controller: controller,
+        padding: EdgeInsets.zero,
         tabAlignment: TabAlignment.start,
         isScrollable: true,
         indicatorColor: TColors.primary,

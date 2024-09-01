@@ -6,6 +6,8 @@ class TColors {
   static const Color secondary = Color(0xFFD9DAFD);
   static const Color accent = Color(0xFFb0c7ff);
 
+  static const Color scaffoldColor = Color.fromARGB(255, 249, 249, 249);
+
   // Container colors
   static const Color containerBlue = Color(0xFFDCEDF9);
   static const Color containerPink = Color(0xFFFDD6CE);

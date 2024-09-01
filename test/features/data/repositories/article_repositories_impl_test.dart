@@ -4,6 +4,7 @@ import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:news_app/app/core/errors/failure.dart';
 import 'package:news_app/app/core/network/network_info.dart';
+import 'package:news_app/app/features/article/data/api/api.dart';
 import 'package:news_app/app/features/article/data/datasources/local/article_local_datasource.dart';
 import 'package:news_app/app/features/article/data/datasources/remote/article_remote_datasource.dart';
 import 'package:news_app/app/features/article/data/models/article_model.dart';
@@ -44,14 +45,14 @@ void main() {
       test(
         "should return articles when the call to remoteDataSource is succesful, and insert articles to localDataSource",
         () async {
-          when(mockRemoteDatasource.getArticles()).thenAnswer(
+          when(mockRemoteDatasource.getArticles(any)).thenAnswer(
             (realInvocation) async => Right(tArticles),
           );
 
-          final result = await repository.getRemoteArticles();
+          final result = await repository.getRemoteArticles(ArticleCategory.general);
 
           expect(result, Right(tArticles));
-          verify(mockRemoteDatasource.getArticles());
+          verify(mockRemoteDatasource.getArticles(any));
           verify(mockLocalDatasource.insertArticles(tArticles));
           verifyNoMoreInteractions(mockRemoteDatasource);
           verifyNoMoreInteractions(mockLocalDatasource);
@@ -61,14 +62,14 @@ void main() {
       test(
         "should return failure when the call to remoteDataSource is unsuccesful",
         () async {
-          when(mockRemoteDatasource.getArticles()).thenAnswer(
+          when(mockRemoteDatasource.getArticles(any)).thenAnswer(
             (realInvocation) async => const Left(Failure(serverErrorMessage)),
           );
 
-          final result = await repository.getRemoteArticles();
+          final result = await repository.getRemoteArticles(ArticleCategory.general);
 
           expect(result, const Left(Failure(serverErrorMessage)));
-          verify(mockRemoteDatasource.getArticles());
+          verify(mockRemoteDatasource.getArticles(any));
           verifyNoMoreInteractions(mockRemoteDatasource);
           verifyZeroInteractions(mockLocalDatasource);
         },

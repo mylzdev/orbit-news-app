@@ -1,5 +1,5 @@
 import 'package:dartz/dartz.dart';
-import 'package:news_app/app/core/utils/logger/logger.dart';
+import 'package:news_app/app/features/article/data/api/api.dart';
 
 import '../../../../core/errors/failure.dart';
 import '../../domain/entitites/article.dart';
@@ -17,14 +17,13 @@ class ArticleRepositoriesImpl implements ArticleRepositories {
   });
 
   @override
-  Future<Either<Failure, List<Article>>> getRemoteArticles() async {
-    final failureOrArticles = await remoteDatasource.getArticles();
+  Future<Either<Failure, List<Article>>> getRemoteArticles(ArticleCategory category) async {
+    final failureOrArticles = await remoteDatasource.getArticles(category);
     return await failureOrArticles.fold(
       (failure) => Left(failure),
       (articles) async {
         if (articles.isNotEmpty) {
-          final isInserted = await localDatasource.insertArticles(articles);
-          TLoggerHelper.info(isInserted.toString());
+          await localDatasource.insertArticles(articles);
           return Right(articles);
         }
         return const Left(

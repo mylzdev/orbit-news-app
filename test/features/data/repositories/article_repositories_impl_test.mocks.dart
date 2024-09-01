@@ -130,11 +130,12 @@ class MockArticleRemoteDatasource extends _i1.Mock
       ) as _i2.RestClient);
 
   @override
-  _i5.Future<_i3.Either<_i8.Failure, List<_i6.ArticleModel>>> getArticles() =>
+  _i5.Future<_i3.Either<_i8.Failure, List<_i6.ArticleModel>>> getArticles(
+          _i2.ArticleCategory? category) =>
       (super.noSuchMethod(
         Invocation.method(
           #getArticles,
-          [],
+          [category],
         ),
         returnValue:
             _i5.Future<_i3.Either<_i8.Failure, List<_i6.ArticleModel>>>.value(
@@ -142,7 +143,7 @@ class MockArticleRemoteDatasource extends _i1.Mock
           this,
           Invocation.method(
             #getArticles,
-            [],
+            [category],
           ),
         )),
         returnValueForMissingStub:
@@ -151,7 +152,7 @@ class MockArticleRemoteDatasource extends _i1.Mock
           this,
           Invocation.method(
             #getArticles,
-            [],
+            [category],
           ),
         )),
       ) as _i5.Future<_i3.Either<_i8.Failure, List<_i6.ArticleModel>>>);

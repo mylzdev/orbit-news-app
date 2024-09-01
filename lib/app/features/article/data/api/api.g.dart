@@ -24,7 +24,10 @@ class _RestClient implements RestClient {
   final ParseErrorLogger? errorLogger;
 
   @override
-  Future<ResponseWrapper> getTopHeadlines(String apikey) async {
+  Future<ResponseWrapper> getTopHeadlines(
+    String apikey,
+    ArticleCategory category,
+  ) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
@@ -36,7 +39,7 @@ class _RestClient implements RestClient {
     )
         .compose(
           _dio.options,
-          '/everything?q=bitcoin&apiKey=${apikey}',
+          '/everything?q=${category.name}&apiKey=${apikey}',
           queryParameters: queryParameters,
           data: _data,
         )

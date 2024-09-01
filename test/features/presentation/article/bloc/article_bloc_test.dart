@@ -5,6 +5,7 @@ import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:news_app/app/core/errors/failure.dart';
 import 'package:news_app/app/core/usecase/usecase.dart';
+import 'package:news_app/app/features/article/data/api/api.dart';
 import 'package:news_app/app/features/article/domain/usecases/get_local_articles_usecase.dart';
 import 'package:news_app/app/features/article/domain/usecases/get_remote_articles_usecase.dart';
 import 'package:news_app/app/features/article/presentation/bloc/article_bloc.dart';
@@ -24,6 +25,8 @@ void main() {
   late MockGetRemoteArticlesUsecase remoteArticle;
   late MockGetLocalArticlesUsecase localArticle;
   late ArticleBloc articleBloc;
+
+  const category = ArticleCategory.general;
 
   setUp(() async {
     TestWidgetsFlutterBinding.ensureInitialized();
@@ -46,18 +49,21 @@ void main() {
           when(networkInfo.isConnected).thenAnswer(
             (realInvocation) => Future.value(true),
           );
-          when(remoteArticle(NoParams())).thenAnswer(
+          when(remoteArticle(const Params(ArticleCategory.general))).thenAnswer(
             (realInvocation) => Future.value(Right(articles)),
           );
           return articleBloc;
         },
-        act: (bloc) => bloc.add(const GetData()),
+        act: (bloc) => bloc.add(const GetData(category)),
         expect: () => [
           const ArticleLoading(),
           ArticleSuccess(articles),
         ],
         verify: (_) {
-          verifyInOrder([networkInfo.isConnected, remoteArticle(NoParams())]);
+          verifyInOrder([
+            networkInfo.isConnected,
+            remoteArticle(const Params(ArticleCategory.general))
+          ]);
           verifyNoMoreInteractions(networkInfo);
           verifyNoMoreInteractions(remoteArticle);
           verifyZeroInteractions(localArticle);
@@ -71,22 +77,37 @@ void main() {
           when(networkInfo.isConnected).thenAnswer(
             (realInvocation) => Future.value(true),
           );
-          when(remoteArticle(NoParams())).thenAnswer(
+          when(remoteArticle(const Params(category))).thenAnswer(
             (realInvocation) =>
                 Future.value(const Left(Failure(serverErrorMessage))),
           );
           return articleBloc;
         },
-        act: (bloc) => bloc.add(const GetData()),
+        act: (bloc) => bloc.add(const GetData(category)),
         expect: () => [
           const ArticleLoading(),
           const ArticleError(Failure(serverErrorMessage))
         ],
         verify: (_) {
-          verifyInOrder([networkInfo.isConnected, remoteArticle(NoParams())]);
+          verifyInOrder(
+              [networkInfo.isConnected, remoteArticle(const Params(category))]);
           verifyNoMoreInteractions(networkInfo);
           verifyNoMoreInteractions(remoteArticle);
           verifyZeroInteractions(localArticle);
+        },
+      );
+      blocTest<ArticleBloc, ArticleState>(
+        'should immedietly trigger [ArticleSuccess] if the ArticleCategory is already loaded',
+        build: () {
+          articleBloc.cachedArticles[category] = articles;
+          return articleBloc;
+        },
+        act: (bloc) => bloc.add(const GetData(category)),
+        expect: () => [ArticleSuccess(articles)],
+        verify: (bloc) {
+          verifyZeroInteractions(remoteArticle);
+          verifyZeroInteractions(localArticle);
+          verifyZeroInteractions(networkInfo);
         },
       );
     },
@@ -106,7 +127,7 @@ void main() {
           );
           return articleBloc;
         },
-        act: (bloc) => bloc.add(const GetData()),
+        act: (bloc) => bloc.add(const GetData(category)),
         expect: () => [const ArticleLoading(), ArticleSuccess(articles)],
         verify: (_) {
           verifyInOrder([
@@ -132,7 +153,7 @@ void main() {
           );
           return articleBloc;
         },
-        act: (bloc) => bloc.add(const GetData()),
+        act: (bloc) => bloc.add(const GetData(category)),
         expect: () => [
           const ArticleLoading(),
           const ArticleError(Failure(cacheErrorMessage))

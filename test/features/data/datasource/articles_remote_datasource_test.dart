@@ -40,15 +40,15 @@ void main() {
       test(
         "should return articles when the call to rest client is successful",
         () async {
-          when(client.getTopHeadlines(any)).thenAnswer(
+          when(client.getTopHeadlines(any, any)).thenAnswer(
             (realInvocation) => Future.value(
               ResponseWrapper(articles: tArticles),
             ),
           );
-          final result = await remoteDatasource.getArticles();
+          final result = await remoteDatasource.getArticles(ArticleCategory.general);
 
           expect(result, Right(ResponseWrapper(articles: tArticles).articles));
-          verify(client.getTopHeadlines(any));
+          verify(client.getTopHeadlines(any, any));
           verifyNoMoreInteractions(client);
         },
       );
@@ -56,12 +56,12 @@ void main() {
       test(
         "should return failure when the call to rest client is unsuccessful",
         () async {
-          when(client.getTopHeadlines(any)).thenThrow(Exception());
+          when(client.getTopHeadlines(any, any)).thenThrow(Exception());
 
-          final result = await remoteDatasource.getArticles();
+          final result = await remoteDatasource.getArticles(ArticleCategory.general);
 
           expect(result, isA<Left>());
-          verify(client.getTopHeadlines(any));
+          verify(client.getTopHeadlines(any, any));
           verifyNoMoreInteractions(client);
         },
       );

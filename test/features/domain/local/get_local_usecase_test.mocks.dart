@@ -8,6 +8,7 @@ import 'dart:async' as _i4;
 import 'package:dartz/dartz.dart' as _i2;
 import 'package:mockito/mockito.dart' as _i1;
 import 'package:news_app/app/core/errors/failure.dart' as _i5;
+import 'package:news_app/app/features/article/data/api/api.dart' as _i7;
 import 'package:news_app/app/features/article/domain/entitites/article.dart'
     as _i6;
 import 'package:news_app/app/features/article/domain/repositories/article_repositories.dart'
@@ -42,11 +43,12 @@ class _FakeEither_0<L, R> extends _i1.SmartFake implements _i2.Either<L, R> {
 class MockArticleRepositories extends _i1.Mock
     implements _i3.ArticleRepositories {
   @override
-  _i4.Future<_i2.Either<_i5.Failure, List<_i6.Article>>> getRemoteArticles() =>
+  _i4.Future<_i2.Either<_i5.Failure, List<_i6.Article>>> getRemoteArticles(
+          _i7.ArticleCategory? category) =>
       (super.noSuchMethod(
         Invocation.method(
           #getRemoteArticles,
-          [],
+          [category],
         ),
         returnValue:
             _i4.Future<_i2.Either<_i5.Failure, List<_i6.Article>>>.value(
@@ -54,7 +56,7 @@ class MockArticleRepositories extends _i1.Mock
           this,
           Invocation.method(
             #getRemoteArticles,
-            [],
+            [category],
           ),
         )),
         returnValueForMissingStub:
@@ -63,7 +65,7 @@ class MockArticleRepositories extends _i1.Mock
           this,
           Invocation.method(
             #getRemoteArticles,
-            [],
+            [category],
           ),
         )),
       ) as _i4.Future<_i2.Either<_i5.Failure, List<_i6.Article>>>);

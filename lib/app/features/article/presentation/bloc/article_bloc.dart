@@ -4,6 +4,7 @@ import 'package:dartz/dartz.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
+import 'package:news_app/app/features/article/data/api/api.dart';
 
 import '../../../../core/errors/failure.dart';
 import '../../../../core/network/network_info.dart';
@@ -21,6 +22,8 @@ class ArticleBloc extends Bloc<ArticleEvent, ArticleState> {
   final GetRemoteArticlesUsecase remoteUsecase;
   final GetLocalArticlesUsecase localUsecase;
 
+  final Map<ArticleCategory, List<Article>> cachedArticles = {};
+
   ArticleBloc({
     required this.network,
     required this.remoteUsecase,
@@ -30,24 +33,33 @@ class ArticleBloc extends Bloc<ArticleEvent, ArticleState> {
   }
 
   Future<void> _onGetData(GetData event, Emitter<ArticleState> emit) async {
+    if (cachedArticles.containsKey(event.category)) {
+      emit(ArticleSuccess(cachedArticles[event.category]!));
+      return;
+    }
+
     emit(const ArticleLoading());
     final isConnected = await network.isConnected;
 
     if (isConnected) {
-      final failureOrRemoteArticles = await remoteUsecase(NoParams());
-      _eitherFailureOrArticles(failureOrRemoteArticles, emit);
+      final failureOrRemoteArticles =
+          await remoteUsecase(Params(event.category));
+      _eitherFailureOrArticles(failureOrRemoteArticles, emit, event);
     } else {
       final failureOrLocalArticles = await localUsecase(NoParams());
-      _eitherFailureOrArticles(failureOrLocalArticles, emit);
+      _eitherFailureOrArticles(failureOrLocalArticles, emit, event);
       waitForConnectivityAndNotifyGetDataEvent();
     }
   }
 
-  void _eitherFailureOrArticles(
-      _EitherFailureOrArticles failureOrArticles, Emitter<ArticleState> emit) {
+  void _eitherFailureOrArticles(_EitherFailureOrArticles failureOrArticles,
+      Emitter<ArticleState> emit, GetData event) {
     failureOrArticles.fold(
       (failure) => emit(ArticleError(Failure(failure.message))),
-      (articles) => emit(ArticleSuccess(articles)),
+      (articles) {
+        cachedArticles[event.category] = articles;
+        emit(ArticleSuccess(articles));
+      },
     );
   }
 
@@ -56,7 +68,7 @@ class ArticleBloc extends Bloc<ArticleEvent, ArticleState> {
     subscription = network.internetConnectionStatus.listen((status) {
       if (status == InternetConnectionStatus.connected) {
         subscription?.cancel();
-        add(const GetData());
+        add(const GetData(ArticleCategory.general));
       } else {
         Get.defaultDialog(
           title: 'No Internet',

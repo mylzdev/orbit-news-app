@@ -8,13 +8,13 @@ import 'dart:async' as _i5;
 import 'package:dartz/dartz.dart' as _i3;
 import 'package:mockito/mockito.dart' as _i1;
 import 'package:news_app/app/core/errors/failure.dart' as _i6;
-import 'package:news_app/app/core/usecase/usecase.dart' as _i8;
+import 'package:news_app/app/core/usecase/usecase.dart' as _i9;
 import 'package:news_app/app/features/article/domain/entitites/article.dart'
     as _i7;
 import 'package:news_app/app/features/article/domain/repositories/article_repositories.dart'
     as _i2;
 import 'package:news_app/app/features/article/domain/usecases/get_local_articles_usecase.dart'
-    as _i9;
+    as _i8;
 import 'package:news_app/app/features/article/domain/usecases/get_remote_articles_usecase.dart'
     as _i4;
 
@@ -72,7 +72,7 @@ class MockGetRemoteArticlesUsecase extends _i1.Mock
 
   @override
   _i5.Future<_i3.Either<_i6.Failure, List<_i7.Article>>> call(
-          _i8.NoParams? params) =>
+          _i4.Params? params) =>
       (super.noSuchMethod(
         Invocation.method(
           #call,
@@ -103,7 +103,7 @@ class MockGetRemoteArticlesUsecase extends _i1.Mock
 ///
 /// See the documentation for Mockito's code generation for more information.
 class MockGetLocalArticlesUsecase extends _i1.Mock
-    implements _i9.GetLocalArticlesUsecase {
+    implements _i8.GetLocalArticlesUsecase {
   @override
   _i2.ArticleRepositories get repository => (super.noSuchMethod(
         Invocation.getter(#repository),
@@ -128,7 +128,7 @@ class MockGetLocalArticlesUsecase extends _i1.Mock
 
   @override
   _i5.Future<_i3.Either<_i6.Failure, List<_i7.Article>>> call(
-          _i8.NoParams? params) =>
+          _i9.NoParams? params) =>
       (super.noSuchMethod(
         Invocation.method(
           #call,

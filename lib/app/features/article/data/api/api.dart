@@ -8,6 +8,17 @@ part 'api.g.dart';
 abstract class RestClient {
   factory RestClient(Dio dio, {String baseUrl}) = _RestClient;
 
-  @GET("/everything?q=bitcoin&apiKey={apikey}")
-  Future<ResponseWrapper> getTopHeadlines(@Path('apikey') String apikey);
+  @GET("/everything?q={category}&apiKey={apikey}")
+  Future<ResponseWrapper> getTopHeadlines(@Path('apikey') String apikey,
+      @Path('category') ArticleCategory category);
+}
+
+enum ArticleCategory {
+  general,
+  health,
+  business,
+  entertainment,
+  science,
+  sports,
+  technology,
 }

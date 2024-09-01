@@ -31,7 +31,6 @@ class ArticlesLocalDatasourceHiveImpl implements ArticleLocalDatasource {
 
   @override
   Future<bool> deleteDb() async {
-    // TODO: implement deleteDb
     throw UnimplementedError();
   }
 

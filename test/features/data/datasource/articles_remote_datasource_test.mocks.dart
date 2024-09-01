@@ -39,18 +39,27 @@ class _FakeResponseWrapper_0 extends _i1.SmartFake
 /// See the documentation for Mockito's code generation for more information.
 class MockRestClient extends _i1.Mock implements _i3.RestClient {
   @override
-  _i4.Future<_i2.ResponseWrapper> getTopHeadlines(String? apikey) =>
+  _i4.Future<_i2.ResponseWrapper> getTopHeadlines(
+    String? apikey,
+    _i3.ArticleCategory? category,
+  ) =>
       (super.noSuchMethod(
         Invocation.method(
           #getTopHeadlines,
-          [apikey],
+          [
+            apikey,
+            category,
+          ],
         ),
         returnValue:
             _i4.Future<_i2.ResponseWrapper>.value(_FakeResponseWrapper_0(
           this,
           Invocation.method(
             #getTopHeadlines,
-            [apikey],
+            [
+              apikey,
+              category,
+            ],
           ),
         )),
         returnValueForMissingStub:
@@ -58,7 +67,10 @@ class MockRestClient extends _i1.Mock implements _i3.RestClient {
           this,
           Invocation.method(
             #getTopHeadlines,
-            [apikey],
+            [
+              apikey,
+              category,
+            ],
           ),
         )),
       ) as _i4.Future<_i2.ResponseWrapper>);
